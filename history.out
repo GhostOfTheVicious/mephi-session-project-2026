@@ -1,0 +1,84 @@
+    1  ping 8.8.8.8
+    2  hostnamectl set-hostname mephi-2026.domain.local
+    3  ping -c 4 8.8.8.8 > ping.out
+    4  cat ping.out 
+    5  dnf update -y
+    6  dnf install -y nginx libcap-ng-utils
+    7  dnf download tcpdump --destdir=/tmp
+    8  rpm -ivh /tmp/tcpdump*.rpm
+    9  rm -rf /tmp/tcpdump*.rpm
+   10  dnf download --arch=x86_64 tcpdump --destdir=/tmp
+   11  rpm -ivh /tmp/tcpdump*.rpm
+   12  dnf history > dnf.out
+   13  cat dnf.out 
+   14  lsblk
+   15  echo -e "n\np\n1\n\n\nw" | fdisk /dev/vdb
+   16  mkfs.ext4 -L MEPHI_WEB /dev/vdb1
+   17  mkdir -p /mephi-web
+   18  mount /dev/vdb1 /mephi-web
+   19  echo "LABEL=MEPHI_WEB /mephi-web ext4 defaults 0 2
+   20  echo "LABEL=MEPHI_WEB /mephi-web ext4 defaults 0 2" >> /etc/fstab
+   21  mount -a
+   22  df -h /mephi-web/
+   23  systemtcl start nginx
+   24  systemctl start nginx
+   25  systemctl enable nginx
+   26  journalctl -u nginx -b > journalctl.out
+   27  cat journalctl.out 
+   28  systemctl status nginx
+   29  mkdir /data/mephi-2026
+   30  mkdir -p /data/mephi-2026
+   31  groupadd -g 4444 curators
+   32  useradd -u 5501 -m user1
+   33  useradd -u 5502 -m user2
+   34  useradd -u 5503 -m user3
+   35  useradd -g curators curator1
+   36  useradd -g curators curator2
+   37  chown root:root /data/mephi-2026/
+   38  chown 750 /data/mephi-2026/
+   39  setfacl -R -m -u:user1:rwx,u:user2:rwx,u:user3:rwx /data/mephi-2026/
+   40  setfacl -R -m u:user1:rwx,u:user2:rwx,u:user3:rwx /data/mephi-2026/
+   41  setfacl -R -d -m u:user1:rwx,u:user2:rwx,u:user3:rwx /data/mephi-2026/
+   42  setfacl -R -m g:curators:r-x /data/mephi-2026
+   43  setfacl -R -d -m g:curators:r-x /data/mephi-2026
+   44  stat /data/mephi-2026 > stat.out
+   45  ls
+   46  cat stat.out 
+   47  chmod u-s /usr/sbin/tcpdump 
+   48  setcap cap_net_raw,cap_net_admin+ep /usr/sbin/tcpdump 
+   49  sudo -u user1 /usr/sbin/tcpdump -c 1
+   50  getcap /usr/sbin/tcpdump > getcap.out
+   51  cat getcap.out 
+   52  getenforce > getenforce.out
+   53  cat getenforce.out 
+   54  semanage fcontext -a -t httpd_sys_content_t "/mephi-web(/.*)?"
+   55  chcon -R -t httpd_sys_content_t /mephi-web
+   56  getenforce
+   57  ls -ldZ /mephi-web/
+   58  usermod -s /sbin/nologin curator1
+   59  usermod -s /sbin/nologin curator2
+   60  sed -i 's/^#\? *minlen.*/minlen = 12/' /etc/security/pwquality.conf
+   61  chage -M 90 user1
+   62  chage -M 90 user2
+   63  chage -M 90 user3
+   64  chage -M 90 curator1
+   65  chage -M 90 curator2
+   66  echo "Hello from Student: M265868" /mephi-web/index.html
+   67  echo "Hello from Student: M265868" > /mephi-web/index.html
+   68  curl http://localhost/ > curl.out
+   69  cat curl.out 
+   70  cat curl.out  | less
+   71  cat /mephi-web/index.html 
+   72  curl http://localhost/ > curl.out
+   73  head -n 10 curl.out 
+   74  nano /etc/nginx/nginx.conf
+   75  nginx -t
+   76  nginx restart nginx
+   77  systemtcl restart nginx
+   78  systemctl restart nginx
+   79  curl http://localhost/ > curl.out
+   80  cat curl.out 
+   81   clear
+   82  curl http://localhost/ > curl.out
+   83  cat curl.out 
+   84  history > history.out
